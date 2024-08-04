@@ -1,16 +1,17 @@
-import s from './Options.module.css';
+import s from "./Options.module.css";
 
-export const Options = ({ 
-  valueOption, 
-  handleReset, 
-  handleOnClick 
+export const Options = ({
+  valueOption,
+  handleReset,
+  handleOnClick,
+  totalFeedback,
 }) => {
   return (
     <ul className={s.decor}>
       <li>
         <button
           className={s.decorBTN}
-          onClick={() => handleOnClick('good')}
+          onClick={() => handleOnClick("good")}
           type="button"
         >
           {valueOption.good}
@@ -19,7 +20,7 @@ export const Options = ({
       <li>
         <button
           className={s.decorBTN}
-          onClick={() => handleOnClick('neutral')}
+          onClick={() => handleOnClick("neutral")}
           type="button"
         >
           {valueOption.neutral}
@@ -28,17 +29,19 @@ export const Options = ({
       <li>
         <button
           className={s.decorBTN}
-          onClick={() => handleOnClick('bad')}
+          onClick={() => handleOnClick("bad")}
           type="button"
         >
           {valueOption.bad}
         </button>
       </li>
-      <li>
-        <button className={s.decorBTN} onClick={handleReset} type="button">
-          {valueOption.reset}
-        </button>
-      </li>
+      {totalFeedback > 0 && (
+        <li>
+          <button className={s.decorBTN} onClick={handleReset} type="button">
+            {valueOption.reset}
+          </button>
+        </li>
+      )}
     </ul>
   );
 };

@@ -1,3 +1,4 @@
+// src/App.jsx
 import { useState, useEffect } from "react";
 import "./App.css";
 
@@ -9,17 +10,15 @@ import { Notification } from "./components/Notification/Notification";
 export default function App() {
   const [clicked, setClicked] = useState({ good: 0, neutral: 0, bad: 0 });
 
-  //*-------------------------------------------------------------------*//
-
   const name = "Sip Happens Café";
   const paragraph =
     "Please leave your feedback about our service by selecting one of the options below";
-  const message = "Not feedback yet";
-  //*-------------------------------------------------------------------*//
-  const totalFeedback = clicked.bad + clicked.good + clicked.neutral;
-  const goodFeedback = Math.round((clicked.good / totalFeedback) * 100);
+  const message = "No feedback yet";
 
-  //*-------------------------------------------------------------------*//
+  const totalFeedback = clicked.bad + clicked.good + clicked.neutral;
+  const goodFeedback = totalFeedback
+    ? Math.round((clicked.good / totalFeedback) * 100)
+    : 0;
 
   const valueOption = {
     good: "Good",
@@ -28,23 +27,33 @@ export default function App() {
     reset: "Reset",
   };
 
-  //*-------------------------------------------------------------------*//
-
   function handleOnClick(type) {
-    setClicked((prevState) => ({
-      ...prevState,
-      [type]: prevState[type] + 1,
-    }));
+    setClicked((prevState) => {
+      const newState = {
+        ...prevState,
+        [type]: prevState[type] + 1,
+      };
+      localStorage.setItem("feedback", JSON.stringify(newState));
+      return newState;
+    });
   }
 
   function handleReset() {
-    setClicked({ good: 0, neutral: 0, bad: 0 });
+    const resetState = { good: 0, neutral: 0, bad: 0 };
+    setClicked(resetState);
+    localStorage.setItem("feedback", JSON.stringify(resetState));
   }
 
   useEffect(() => {
-    console.log("hey you", clicked);
+    const storedFeedback = localStorage.getItem("feedback");
+    if (storedFeedback) {
+      setClicked(JSON.parse(storedFeedback));
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("Feedback state updated:", clicked);
   }, [clicked]);
-  //*-------------------------------------------------------------------*//
 
   return (
     <section>
@@ -53,6 +62,7 @@ export default function App() {
         valueOption={valueOption}
         handleReset={handleReset}
         handleOnClick={handleOnClick}
+        totalFeedback={totalFeedback}
       />
       {totalFeedback > 0 ? (
         <Feedback
