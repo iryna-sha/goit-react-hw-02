@@ -16,7 +16,7 @@ export default function App() {
   const message = "No feedback yet";
 
   const totalFeedback = clicked.bad + clicked.good + clicked.neutral;
-  const goodFeedback = totalFeedback
+  const positiveFeedback = totalFeedback
     ? Math.round((clicked.good / totalFeedback) * 100)
     : 0;
 
@@ -33,7 +33,6 @@ export default function App() {
         ...prevState,
         [type]: prevState[type] + 1,
       };
-      localStorage.setItem("feedback", JSON.stringify(newState));
       return newState;
     });
   }
@@ -41,7 +40,6 @@ export default function App() {
   function handleReset() {
     const resetState = { good: 0, neutral: 0, bad: 0 };
     setClicked(resetState);
-    localStorage.setItem("feedback", JSON.stringify(resetState));
   }
 
   useEffect(() => {
@@ -52,7 +50,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    console.log("Feedback state updated:", clicked);
+    localStorage.setItem("feedback", JSON.stringify(clicked));
   }, [clicked]);
 
   return (
@@ -69,7 +67,7 @@ export default function App() {
           feedBack={clicked}
           valueOption={valueOption}
           totalFeedback={totalFeedback}
-          goodFeedback={goodFeedback}
+          positiveFeedback={positiveFeedback}
         />
       ) : (
         <Notification message={message} />
